@@ -38,7 +38,7 @@ def extract_listings(soup):
             'number_of_rooms': number_of_rooms,
             'number_of_bathrooms': number_of_bathrooms,
             'parking_spaces': parking_spaces,
-            'link': link
+            'link': 'https://www.athome.lu' + link
         }
 
         all_listing_details.append(listing_details)
