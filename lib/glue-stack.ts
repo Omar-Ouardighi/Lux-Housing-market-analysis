@@ -4,7 +4,7 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
 import * as path from 'path';
-import * as assets from '@aws-cdk/aws-s3-assets';
+import * as assets from 'aws-cdk-lib/aws-s3-assets';
 
 export class GlueCdkStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
