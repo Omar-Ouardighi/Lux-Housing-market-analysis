@@ -58,7 +58,7 @@ export class GlueCdkStack extends cdk.Stack {
 
     // Upload job script as S3 asset
     const scriptAsset = new assets.Asset(this, 'Script', {
-        path: path.join(__dirname, 'etl', 'glue_job.py'),
+        path: path.join(__dirname,'..', 'etl', 'glue_job.py'),
       });
 
     // Create Glue Job output bucket
