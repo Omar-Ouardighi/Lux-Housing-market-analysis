@@ -1,4 +1,4 @@
-name: Deploy LambdaStack
+name: Deploy cdk lux stacks
 
 
 permissions:
@@ -19,7 +19,11 @@ jobs:
      - name: Checkout this repo
        uses: actions/checkout@v3
 
-
+     - name: Set up Node.js
+       uses: actions/setup-node@v3
+       with:
+         node-version: '20'
+     
      - name: Configure AWS credentials
        uses: aws-actions/configure-aws-credentials@v2
        with:
@@ -28,10 +32,10 @@ jobs:
          role-session-name: "GitHubActions-DeployLayerStack"
 
 
-     - name: Deploy LambdaStack (via CDK)
+     - name: Deploy all stacks (via CDK)
        uses: youyo/aws-cdk-github-actions@v2
        with:
          cdk_subcommand: 'deploy'
          cdk_stack: '--all'
-         cdk_args: '--require-approval never' # This is a toy example, so we don't need to approve changes
+         cdk_args: '--require-approval never' 
          actions_comment: false
