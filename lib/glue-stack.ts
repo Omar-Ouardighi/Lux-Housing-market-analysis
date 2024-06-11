@@ -74,7 +74,7 @@ export class GlueCdkStack extends cdk.Stack {
         scriptLocation: `s3://${scriptAsset.s3BucketName}/${scriptAsset.s3ObjectKey}`,
         pythonVersion: '3',
       },
-      glueVersion: '2.0',
+      glueVersion: '4.0',
       maxRetries: 3,
       timeout: 2880,
       numberOfWorkers: 2,
