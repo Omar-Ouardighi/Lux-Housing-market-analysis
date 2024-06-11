@@ -1,43 +1,75 @@
 import sys
+
+from awsglue.context import GlueContext
+from awsglue.dynamicframe import DynamicFrame
+from awsglue.job import Job
 from awsglue.transforms import *
 from awsglue.utils import getResolvedOptions
 from pyspark.context import SparkContext
-from awsglue.context import GlueContext
-from awsglue.job import Job
+from pyspark.sql import functions as F
+from pyspark.sql.functions import regexp_replace, trim, col
 
-# Initialize Glue Context
-args = getResolvedOptions(sys.argv, ['JOB_NAME'])
-sc = SparkContext()
+sc = SparkContext.getOrCreate()
 glueContext = GlueContext(sc)
 spark = glueContext.spark_session
 job = Job(glueContext)
-job.init(args['JOB_NAME'], args)
 
-# Read the data from the Glue Data Catalog
-datasource = glueContext.create_dynamic_frame.from_catalog(database = "your_database_name", table_name = "your_table_name", transformation_ctx = "datasource")
 
-# Convert DynamicFrame to DataFrame
-df = datasource.toDF()
+def extract_houston_from_catalog(database, listing_table_name):
+    raw_listing_dynamic_frame = glueContext.create_dynamic_frame.from_catalog(
+        database=database, table_name=listing_table_name
+    )
+    df = raw_listing_dynamic_frame.toDF()
+    return df
 
-# Transform the data
-# 1. Remove Euro symbol from price and convert it to integer
-# 2. Trim spaces from the location
-# 3. Remove square meter symbol and convert area to integer
-from pyspark.sql.functions import regexp_replace, trim, col
-
-df_transformed = df.withColumn("price", regexp_replace(col("price"), "[\s€\u202f]", "").cast("integer")) \
+def transform_data(df):
+    """
+    Transform the data
+    1. Remove Euro symbol from price and convert it to integer
+    2. Trim spaces from the location
+    3. Remove square meter symbol and convert area to integer
+    """
+    df_transformed = df.withColumn("price", regexp_replace(col("price"), "[\s€\u202f]", "").cast("integer")) \
                    .withColumn("location", trim(col("location"))) \
-                   .withColumn("area", regexp_replace(col("area"), "[\sm²]", "").cast("integer")) \
-                   .withColumn("number_of_rooms", col("number_of_rooms").cast("integer")) \
-                   .withColumn("number_of_bathrooms", col("number_of_bathrooms").cast("integer")) \
-                   .withColumn("parking_spaces", col("parking_spaces").cast("integer"))
+                   .withColumn("area", regexp_replace(col("area"), "[\sm²]", "").cast("integer")) 
+    return df_transformed
 
-# Convert DataFrame back to DynamicFrame
-dynamic_frame_transformed = DynamicFrame.fromDF(df_transformed, glueContext, "dynamic_frame_transformed")
 
-# Write the transformed data back to S3
-output_path = "s3://your-output-bucket/transformed-data/"
-glueContext.write_dynamic_frame.from_options(frame = dynamic_frame_transformed, connection_type = "s3", connection_options = {"path": output_path}, format = "csv")
+def load_to_s3(glue_dynamic_frame):
+    s3output = glueContext.getSink(
+        path="s3://JobOutputBucket1/std_data/",
+        connection_type="s3",
+        updateBehavior="UPDATE_IN_DATABASE",
+        partitionKeys=[],
+        compression="snappy",
+        enableUpdateCatalog=True,
+        transformation_ctx="s3output",
+    )
 
-# Commit job
-job.commit()
+    s3output.setCatalogInfo(
+        catalogDatabase="my_glue_database", catalogTableName="lux_flats"
+    )
+
+    s3output.setFormat("glueparquet")
+    s3output.writeFrame(glue_dynamic_frame)
+
+
+if __name__ == "__main__":
+    database = "my_glue_database"
+    listing_table_name = "housing_lu_omar"
+    df_listing = extract_houston_from_catalog(database, listing_table_name)
+    
+    df_final = transform_data(df_listing)
+    # going from Spark dataframe to glue dynamic frame
+    
+    glue_dynamic_frame = DynamicFrame.fromDF(df_final, glueContext, "glue_etl")
+
+    # load to s3
+    load_to_s3(glue_dynamic_frame)
+    
+    job.commit()
+
+
+
+
+

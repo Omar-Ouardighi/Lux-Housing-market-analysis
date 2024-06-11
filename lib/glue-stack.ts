@@ -47,7 +47,7 @@ export class GlueCdkStack extends cdk.Stack {
     });
 
     // Glue Crawlers
-    const houstonCrawler = new glue.CfnCrawler(this, 'HoustonCrawler', {
+    const LuxCrawler = new glue.CfnCrawler(this, 'LuxCrawler', {
       role: glueRole.roleArn,
       databaseName: glueDatabase.ref,
       targets: {
