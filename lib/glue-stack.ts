@@ -62,7 +62,10 @@ export class GlueCdkStack extends cdk.Stack {
       });
 
     // Create Glue Job output bucket
-    const jobOutputBucket = new s3.Bucket(this, 'JobOutputBucket', {});
+    const jobOutputBucket = new s3.Bucket(this, 'JobOutputBucket', {
+        bucketName: 'glue-luxjob-output-bucket',
+        removalPolicy: cdk.RemovalPolicy.DESTROY,
+    });
   
 
     // Glue Job
