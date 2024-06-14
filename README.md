@@ -1,14 +1,13 @@
-# Welcome to your CDK TypeScript project
+Lux Housing Market Analysis
+This project is a cloud-based solution for analyzing the housing market in Luxembourg. It uses AWS Cloud Development Kit (CDK) to define cloud resources in a programmatic way.
 
-This is a blank project for CDK development with TypeScript.
+Project Structure
+The project consists of three main components, each represented by a stack:
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+TrustStack: This stack is responsible for managing trust relationships and permissions.
 
-## Useful commands
+DataIngestionStack: This stack is responsible for data ingestion. It might include resources like S3 buckets, Glue crawlers, and more.
 
-* `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile
-* `npm run test`    perform the jest unit tests
-* `npx cdk deploy`  deploy this stack to your default AWS account/region
-* `npx cdk diff`    compare deployed stack with current state
-* `npx cdk synth`   emits the synthesized CloudFormation template
+GlueCdkStack: This stack is responsible for managing AWS Glue resources. AWS Glue is a fully managed extract, transform, and load (ETL) service that makes it easy to prepare and load your data for analytics.
+
+![Architecture Design](img\diagram.png)

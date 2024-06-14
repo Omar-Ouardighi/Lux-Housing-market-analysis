@@ -36,7 +36,7 @@ def transform_data(df):
 
 def load_to_s3(glue_dynamic_frame):
     s3output = glueContext.getSink(
-        path="s3://JobOutputBucket1/std_data/",
+        path="s3://glue-luxjob-output-bucket1/transformed/",
         connection_type="s3",
         updateBehavior="UPDATE_IN_DATABASE",
         partitionKeys=[],
