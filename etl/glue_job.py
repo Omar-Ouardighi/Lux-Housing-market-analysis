@@ -28,7 +28,7 @@ def transform_data(df):
     2. Trim spaces from the location
     3. Remove square meter symbol and convert area to integer
     """
-    df_transformed = df.withColumn("price", regexp_replace(col("price"), "[\s€\u202f]", "").cast("integer")) \
+    df_transformed = df.withColumn("price", regexp_replace(col("price"), "[\s€\u00A0\u202f]", "").cast("integer")) \
                    .withColumn("location", trim(col("location"))) \
                    .withColumn("area", regexp_replace(col("area"), "[\sm²]", "").cast("integer")) 
     return df_transformed
@@ -36,7 +36,7 @@ def transform_data(df):
 
 def load_to_s3(glue_dynamic_frame):
     s3output = glueContext.getSink(
-        path="s3://glue-luxjob-output-bucket1/transformed/",
+        path="s3://glue-luxjob-output-bucket/transformed/",
         connection_type="s3",
         updateBehavior="UPDATE_IN_DATABASE",
         partitionKeys=[],
