@@ -6,7 +6,16 @@ import { TrustStack } from '../lib/trust-stack';
 import { GlueCdkStack } from '../lib/glue-stack';
 
 const app = new cdk.App();
-
-new TrustStack(app, 'TrustStack', {});
-new DataIngestionStack(app, 'DataIngestionStack', {});
-new GlueCdkStack(app, 'GlueCdkStack', {});
+const env = { region: 'us-east-1' }
+new TrustStack(app, 'TrustStack', {
+  env: env,
+  description: 'Trust Stack'
+});
+new DataIngestionStack(app, 'DataIngestionStack', {
+  env: env,
+  description: 'Data Ingestion Stack'
+});
+new GlueCdkStack(app, 'GlueCdkStack', {
+  env: env,
+  description: 'Glue Cdk'
+});
