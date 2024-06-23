@@ -1,7 +1,7 @@
-Lux Housing Market Analysis
-This project is a cloud-based solution for analyzing the housing market in Luxembourg. It uses AWS Cloud Development Kit (CDK) to define cloud resources in a programmatic way.
+## Lux Housing Market Analysis
+This project is a cloud-based solution for analyzing the housing market in Luxembourg. It uses AWS Cloud Development Kit (CDK) to define cloud resources in a programmatic way. the data is scraped from athome.lu
 
-Project Structure
+## Project Structure
 The project consists of three main components, each represented by a stack:
 
 TrustStack: This stack is responsible for managing trust relationships and permissions.
@@ -10,4 +10,5 @@ DataIngestionStack: This stack is responsible for data ingestion. It might inclu
 
 GlueCdkStack: This stack is responsible for managing AWS Glue resources. AWS Glue is a fully managed extract, transform, and load (ETL) service that makes it easy to prepare and load your data for analytics.
 
-![Architecture Design](img\diagram.png)
+## Infrastructure Design
+![Architecture Design](https://github.com/Omar-Ouardighi/Lux-Housing-market-analysis/blob/main/img/diagram.png)
