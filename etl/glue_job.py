@@ -24,11 +24,13 @@ def extract_houston_from_catalog(database, listing_table_name):
 def transform_data(df):
     """
     Transform the data
-    1. Remove Euro symbol from price and convert it to integer
-    2. Trim spaces from the location
-    3. Remove square meter symbol and convert area to integer
+    1. drop duplicates
+    2. Remove Euro symbol from price and convert it to integer
+    3. Trim spaces from the location
+    4. Remove square meter symbol and convert area to integer
     """
-    df_transformed = df.withColumn("price", regexp_replace(col("price"), "[\s€\u00A0\u202f]", "").cast("integer")) \
+    df_distinct = df.drop_duplicates(['link'])
+    df_transformed = df_distinct.withColumn("price", regexp_replace(col("price"), "[\s€\u00A0\u202f]", "").cast("integer")) \
                    .withColumn("location", trim(col("location"))) \
                    .withColumn("area", regexp_replace(col("area"), "[\sm²]", "").cast("integer")) 
     return df_transformed
