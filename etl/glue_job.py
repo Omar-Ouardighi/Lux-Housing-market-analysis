@@ -28,12 +28,14 @@ def transform_data(df):
     2. Remove Euro symbol from price and convert it to integer
     3. Trim spaces from the location
     4. Remove square meter symbol and convert area to integer
+    5. Fill missing values with 0
     """
     df_distinct = df.drop_duplicates(['link'])
     df_transformed = df_distinct.withColumn("price", regexp_replace(col("price"), "[\s€\u00A0\u202f]", "").cast("integer")) \
                    .withColumn("location", trim(col("location"))) \
                    .withColumn("area", regexp_replace(col("area"), "[\sm²]", "").cast("integer")) 
-    return df_transformed
+    df_clean = df_transformed.fillna(0, subset=['price', 'area', 'number_of_rooms', 'number_of_bathrooms', 'parking_spaces'])
+    return df_clean
 
 
 def load_to_s3(glue_dynamic_frame):
